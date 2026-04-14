@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reopen RCA</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f5f5; color: #1a1a1a; line-height: 1.6; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+  h1 { font-size: 24px; font-weight: 700; margin-bottom: 4px; }
+  .subtitle { color: #666; font-size: 14px; margin-bottom: 28px; }
+  .section { background: #fff; border-radius: 8px; padding: 22px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+  h2 { font-size: 16px; font-weight: 700; margin-bottom: 14px; color: #333; }
+  h2 .num-badge { display: inline-block; background: #1a1a1a; color: #fff; width: 24px; height: 24px; border-radius: 50%; text-align: center; line-height: 24px; font-size: 12px; margin-right: 8px; vertical-align: 2px; }
+  h3 { font-size: 13px; font-weight: 600; margin: 14px 0 8px; color: #555; text-transform: uppercase; letter-spacing: 0.3px; }
+  p, li { font-size: 14px; }
+  ul { margin-left: 20px; }
+  li { margin-bottom: 3px; }
+  table { width: 100%; border-collapse: collapse; margin: 8px 0; font-size: 13px; }
+  th { background: #f8f8f8; font-weight: 600; text-align: left; padding: 7px 10px; border-bottom: 2px solid #ddd; }
+  td { padding: 6px 10px; border-bottom: 1px solid #eee; }
+  .num { text-align: right; font-variant-numeric: tabular-nums; }
+  .red { color: #d32f2f; }
+  .green { color: #2e7d32; }
+  .muted { color: #888; }
+  .row-focus { background: #fff3e0; }
+  .row-bug { background: #ffebee; }
+  .takeaway { background: #fff8e1; border-left: 3px solid #f9a825; padding: 10px 14px; margin-top: 12px; border-radius: 0 4px 4px 0; font-size: 13px; }
+  .takeaway-blue { background: #e3f2fd; border-left-color: #1976d2; }
+  .takeaway-red { background: #fce4ec; border-left-color: #d32f2f; }
+  .takeaway-green { background: #e8f5e9; border-left-color: #2e7d32; }
+  .tag { display: inline-block; padding: 2px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; }
+  .kpis { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin: 14px 0; }
+  .kpi { background: #f8f8f8; border-radius: 6px; padding: 12px; text-align: center; }
+  .kpi .v { font-size: 24px; font-weight: 700; }
+  .kpi .l { font-size: 12px; color: #666; margin-top: 2px; }
+  .toc { background: #fafafa; padding: 12px 18px; border-radius: 8px; margin-bottom: 18px; font-size: 12px; }
+  .toc a { color: #1976d2; text-decoration: none; margin-right: 14px; }
+  .toc a:hover { text-decoration: underline; }
+  .bar-cell { position: relative; }
+  .bar { display: inline-block; height: 9px; background: #1976d2; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+  .bar-red { background: #d32f2f; }
+  .bar-green { background: #2e7d32; }
+  .bar-orange { background: #f57c00; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Reopen RCA</h1>
+<p class="subtitle">As of 14 April 2026 &middot; Baseline: December 2025 &middot; Recent: 16 Mar &ndash; 5 Apr 2026 (last 3 complete Mon&ndash;Sun weeks, cohort-mature)</p>
+
+<div class="toc">
+  <a href="#problem">1. Problem</a>
+  <a href="#trend">2. Weekly Trend</a>
+  <a href="#drivers">3. Numerator vs Denominator</a>
+  <a href="#bugs">4. Bug Filter Test</a>
+  <a href="#next">5. Next Steps</a>
+</div>
+
+<!-- 1. PROBLEM -->
+<div class="section" id="problem">
+  <h2><span class="num-badge">1</span>The Problem</h2>
+  <div class="kpis">
+    <div class="kpi"><div class="v">2.07%</div><div class="l">Dec Baseline Reopen Rate</div></div>
+    <div class="kpi"><div class="v red">5.34%</div><div class="l">Recent (Mar 16&ndash;Apr 5) &mdash; +3.27pp</div></div>
+    <div class="kpi"><div class="v red">2.6&times;</div><div class="l">Structural rise</div></div>
+    <div class="kpi"><div class="v">~17K</div><div class="l">Tickets / week (stable)</div></div>
+  </div>
+  <p><strong>Reopen Rate = tickets reopened at least once &divide; all tickets created in the week.</strong></p>
+  <p style="margin-top:8px;">Cohort anchor: <code>ticket_added_time</code> (IST, Mon&ndash;Sun). Reopen flag: <code>times_reopened &ge; 1</code>. Definition and query verified against the Wiom CPP analytics query &mdash; numbers reconcile to the unit.</p>
+  <p class="muted" style="font-size:12px; margin-top:6px;">Scope: <code>current_queue IN ('Px','Cx')</code>, excluding router pickup (<code>ticket_type=1</code>), Shifting tickets, Booking Status, Wiom Net. Same base filters as TAT RCA.</p>
+  <div class="takeaway takeaway-red">
+    <strong>Headline:</strong> Reopen rate has structurally moved from ~2% to ~5.3% &mdash; a 2.6&times; increase, stable for 5+ weeks. This is not the Feb bug spike (peaked at 7.86% then reverted). This is a genuine post-Feb regression in fix quality, matching the ground report of rising reopens.
+  </div>
+</div>
+
+<!-- 2. WEEKLY TREND -->
+<div class="section" id="trend">
+  <h2><span class="num-badge">2</span>Weekly Trend (Mon&ndash;Sun)</h2>
+  <table>
+    <tr><th>Week</th><th class="num">Total Created</th><th class="num">Reopened</th><th class="num">Rate %</th><th class="num">vs Dec Baseline</th></tr>
+    <tr><td>Dec 01 &ndash; Dec 07</td><td class="num">17,950</td><td class="num">386</td><td class="num">2.15%</td><td class="num muted">&mdash;</td></tr>
+    <tr><td>Dec 08 &ndash; Dec 14</td><td class="num">18,039</td><td class="num">433</td><td class="num">2.40%</td><td class="num muted">&mdash;</td></tr>
+    <tr><td>Dec 15 &ndash; Dec 21</td><td class="num">19,134</td><td class="num">404</td><td class="num">2.11%</td><td class="num muted">&mdash;</td></tr>
+    <tr><td>Dec 22 &ndash; Dec 28</td><td class="num">17,541</td><td class="num">296</td><td class="num">1.69%</td><td class="num muted">&mdash;</td></tr>
+    <tr><td>Dec 29 &ndash; Jan 04</td><td class="num">18,037</td><td class="num">359</td><td class="num">1.99%</td><td class="num muted">&mdash;</td></tr>
+    <tr style="background:#f0f0f0; font-weight:600;"><td>Dec Avg (Baseline)</td><td class="num">~18,140</td><td class="num">~376</td><td class="num">2.07%</td><td class="num">&mdash;</td></tr>
+    <tr><td>Jan 05 &ndash; Jan 11</td><td class="num">18,141</td><td class="num">347</td><td class="num">1.91%</td><td class="num green">&minus;0.16pp</td></tr>
+    <tr><td>Jan 12 &ndash; Jan 18</td><td class="num">17,875</td><td class="num">343</td><td class="num">1.92%</td><td class="num green">&minus;0.15pp</td></tr>
+    <tr><td>Jan 19 &ndash; Jan 25</td><td class="num">16,683</td><td class="num">278</td><td class="num">1.67%</td><td class="num green">&minus;0.40pp</td></tr>
+    <tr class="row-bug"><td>Jan 26 &ndash; Feb 01</td><td class="num">16,748</td><td class="num">673</td><td class="num red">4.02%</td><td class="num red">+1.95pp</td></tr>
+    <tr class="row-bug"><td>Feb 02 &ndash; Feb 08</td><td class="num">19,276</td><td class="num">1,516</td><td class="num red">7.86%</td><td class="num red"><strong>+5.79pp &larr; Feb bug peak</strong></td></tr>
+    <tr class="row-bug"><td>Feb 09 &ndash; Feb 15</td><td class="num">17,732</td><td class="num">1,233</td><td class="num red">6.95%</td><td class="num red">+4.88pp</td></tr>
+    <tr><td>Feb 16 &ndash; Feb 22</td><td class="num">19,687</td><td class="num">1,067</td><td class="num red">5.42%</td><td class="num red">+3.35pp</td></tr>
+    <tr><td>Feb 23 &ndash; Mar 01</td><td class="num">18,121</td><td class="num">1,008</td><td class="num red">5.56%</td><td class="num red">+3.49pp</td></tr>
+    <tr><td>Mar 02 &ndash; Mar 08 <span class="muted" style="font-size:11px;">(Holi)</span></td><td class="num">12,419</td><td class="num">874</td><td class="num red">7.04%</td><td class="num red">+4.97pp</td></tr>
+    <tr><td>Mar 09 &ndash; Mar 15</td><td class="num">12,778</td><td class="num">837</td><td class="num red">6.55%</td><td class="num red">+4.48pp</td></tr>
+    <tr class="row-focus"><td>Mar 16 &ndash; Mar 22</td><td class="num">15,125</td><td class="num">769</td><td class="num red">5.08%</td><td class="num red">+3.01pp</td></tr>
+    <tr class="row-focus"><td>Mar 23 &ndash; Mar 29</td><td class="num">17,620</td><td class="num">932</td><td class="num red">5.29%</td><td class="num red">+3.22pp</td></tr>
+    <tr class="row-focus"><td>Mar 30 &ndash; Apr 05</td><td class="num">17,049</td><td class="num">961</td><td class="num red">5.64%</td><td class="num red">+3.57pp</td></tr>
+    <tr style="background:#f0f0f0; font-weight:600;"><td>Recent Avg (Mar 16&ndash;Apr 5)</td><td class="num">~16,598</td><td class="num">~887</td><td class="num red">5.34%</td><td class="num red">+3.27pp</td></tr>
+    <tr><td>Apr 06 &ndash; Apr 12 <span class="muted" style="font-size:11px;">(cohort immature &mdash; only 2 days for Apr 12 tkts to reopen)</span></td><td class="num">16,699</td><td class="num">763</td><td class="num muted">4.57%</td><td class="num muted">&mdash; do not trust yet</td></tr>
+  </table>
+  <div class="takeaway">
+    <strong>Three regimes visible:</strong><br>
+    &bull; <strong>Dec &ndash; mid Jan:</strong> stable baseline ~2% reopen rate.<br>
+    &bull; <strong>Jan 26 &ndash; Feb 15:</strong> Feb bug window. Rate spikes to 4&ndash;8%. Peaks Feb 2&ndash;8 at <strong>7.86%</strong> (~4&times; baseline).<br>
+    &bull; <strong>Feb 23 onwards:</strong> Rate settles at ~5.3% and <em>never returns to the 2% baseline</em>. This is the structural new normal, and it's what the ground feedback is detecting.
+  </div>
+</div>
+
+<!-- 3. NUMERATOR VS DENOMINATOR -->
+<div class="section" id="drivers">
+  <h2><span class="num-badge">3</span>What's Driving the Rate &mdash; Numerator vs Denominator</h2>
+  <p>The rate rose from 2.07% to 5.34%. Decomposition tells us it's driven almost entirely by more tickets being reopened, not fewer tickets being created.</p>
+
+  <table>
+    <tr><th>Window</th><th class="num">Denominator (created/wk)</th><th class="num">Numerator (reopened/wk)</th><th class="num">Rate %</th></tr>
+    <tr><td><strong>Dec 2025 avg</strong></td><td class="num">18,140</td><td class="num">376</td><td class="num">2.07%</td></tr>
+    <tr><td><strong>Mar 16 &ndash; Apr 5 avg</strong></td><td class="num">16,598</td><td class="num">887</td><td class="num red">5.34%</td></tr>
+    <tr style="background:#f0f0f0; font-weight:600;"><td>Change</td><td class="num green">&minus;1,542 (&minus;8.5%)</td><td class="num red">+511 (+136%)</td><td class="num red">+3.27pp (+158%)</td></tr>
+  </table>
+
+  <h3>Counterfactual decomposition</h3>
+  <p>Had the denominator stayed at 18,140 but numerator still grown to 887, the recent rate would be <strong>4.89%</strong>. So:</p>
+  <ul>
+    <li><strong>Numerator growth alone</strong> explains <strong>2.82pp</strong> of the 3.27pp rate rise &mdash; <strong>86% of the move</strong>.</li>
+    <li><strong>Denominator shrinkage alone</strong> (8.5% fewer tickets being created) explains only <strong>0.45pp</strong> &mdash; <strong>14%</strong>.</li>
+  </ul>
+
+  <h3>Weekly numerator absolute trend</h3>
+  <table>
+    <tr><th>Week</th><th class="num">Created</th><th class="bar-cell">Reopened (bar = rel scale)</th><th class="num">Reopened</th></tr>
+    <tr><td>Dec Avg</td><td class="num">18,140</td><td><span class="bar" style="width:60px;"></span></td><td class="num">376</td></tr>
+    <tr><td>Jan Avg</td><td class="num">17,469</td><td><span class="bar" style="width:51px;"></span></td><td class="num">322</td></tr>
+    <tr><td>Feb 2&ndash;15 (bug peak)</td><td class="num">18,504</td><td><span class="bar bar-red" style="width:220px;"></span></td><td class="num red">1,375</td></tr>
+    <tr><td>Feb 16&ndash;Mar 1</td><td class="num">18,904</td><td><span class="bar bar-red" style="width:165px;"></span></td><td class="num red">1,038</td></tr>
+    <tr><td>Mar 2&ndash;15 (Holi)</td><td class="num">12,599</td><td><span class="bar bar-red" style="width:137px;"></span></td><td class="num red">856</td></tr>
+    <tr><td>Mar 16&ndash;Apr 5</td><td class="num">16,598</td><td><span class="bar bar-red" style="width:142px;"></span></td><td class="num red">887</td></tr>
+  </table>
+
+  <div class="takeaway takeaway-red">
+    <strong>The rate rise is overwhelmingly a numerator problem.</strong> Ticket creation is stable (within &plusmn;10% of baseline). The rise is because <em>more of the created tickets are bouncing back</em>. The investigation needs to focus on <strong>why fix quality dropped</strong>, not on ticket volume.
+  </div>
+</div>
+
+<!-- 4. BUG FILTER -->
+<div class="section" id="bugs">
+  <h2><span class="num-badge">4</span>Bug Filter Test &mdash; Are the Reopens Legitimate or Bug-Driven?</h2>
+  <p>Same denominator (all tickets created that week). Same ticket-level filters. We split the numerator into three buckets to see whether the rise is real operational failures or state-machine bugs (reopens that shouldn't be allowed by the lifecycle).</p>
+
+  <h3>Bucket definitions</h3>
+  <table>
+    <tr><th>Bucket</th><th>SQL</th><th>Expected behaviour</th></tr>
+    <tr><td><strong>Legit reopen</strong></td><td><code>times_reopened &ge; 1 AND times_reopened_postclosure = 0</code></td><td>Customer hit "not satisfied" inside 48h window. Allowed by design.</td></tr>
+    <tr><td><strong>Bug A &mdash; post-48h, pre-closure</strong></td><td><code>times_reopened &ge; 1 AND postclosure = 0 AND resolution_to_reopening &gt; 2880 min</code></td><td>Shouldn't exist &mdash; ticket should have auto-closed at 48h.</td></tr>
+    <tr><td><strong>Bug B &mdash; post-closure reopen</strong></td><td><code>times_reopened_postclosure &ge; 1</code></td><td>Shouldn't exist &mdash; closed tickets can't be reopened by design.</td></tr>
+  </table>
+
+  <h3>Weekly split</h3>
+  <table>
+    <tr><th>Week</th><th class="num">Created</th><th class="num">Legit reopens</th><th class="num">Bug A</th><th class="num">Bug B (post-closure)</th><th class="num">Bug share of reopens</th></tr>
+    <tr><td>Dec 01 &ndash; Dec 07</td><td class="num">17,950</td><td class="num">374</td><td class="num">0</td><td class="num">12</td><td class="num muted">3.1%</td></tr>
+    <tr><td>Dec 08 &ndash; Dec 14</td><td class="num">18,039</td><td class="num">424</td><td class="num">0</td><td class="num">9</td><td class="num muted">2.1%</td></tr>
+    <tr><td>Dec 15 &ndash; Dec 21</td><td class="num">19,134</td><td class="num">397</td><td class="num">0</td><td class="num">7</td><td class="num muted">1.7%</td></tr>
+    <tr><td>Dec 22 &ndash; Dec 28</td><td class="num">17,541</td><td class="num">287</td><td class="num">0</td><td class="num">9</td><td class="num muted">3.0%</td></tr>
+    <tr><td>Dec 29 &ndash; Jan 04</td><td class="num">18,037</td><td class="num">352</td><td class="num">0</td><td class="num">7</td><td class="num muted">1.9%</td></tr>
+    <tr style="background:#f0f0f0; font-weight:600;"><td>Dec Avg</td><td class="num">18,140</td><td class="num">367</td><td class="num">0</td><td class="num">9</td><td class="num">2.4%</td></tr>
+    <tr><td>Jan 05 &ndash; Jan 11</td><td class="num">18,141</td><td class="num">338</td><td class="num">0</td><td class="num">9</td><td class="num muted">2.6%</td></tr>
+    <tr><td>Jan 12 &ndash; Jan 18</td><td class="num">17,875</td><td class="num">337</td><td class="num">0</td><td class="num">6</td><td class="num muted">1.7%</td></tr>
+    <tr><td>Jan 19 &ndash; Jan 25</td><td class="num">16,683</td><td class="num">272</td><td class="num">0</td><td class="num">6</td><td class="num muted">2.2%</td></tr>
+    <tr class="row-bug"><td>Jan 26 &ndash; Feb 01</td><td class="num">16,748</td><td class="num">661</td><td class="num">0</td><td class="num">12</td><td class="num muted">1.8%</td></tr>
+    <tr class="row-bug"><td>Feb 02 &ndash; Feb 08</td><td class="num">19,276</td><td class="num red"><strong>1,453</strong></td><td class="num">0</td><td class="num red">63</td><td class="num muted">4.2%</td></tr>
+    <tr class="row-bug"><td>Feb 09 &ndash; Feb 15</td><td class="num">17,732</td><td class="num red">1,193</td><td class="num">0</td><td class="num red">40</td><td class="num muted">3.2%</td></tr>
+    <tr><td>Feb 16 &ndash; Feb 22</td><td class="num">19,687</td><td class="num">1,045</td><td class="num">0</td><td class="num">22</td><td class="num muted">2.1%</td></tr>
+    <tr><td>Feb 23 &ndash; Mar 01</td><td class="num">18,121</td><td class="num">994</td><td class="num">0</td><td class="num">14</td><td class="num muted">1.4%</td></tr>
+    <tr><td>Mar 02 &ndash; Mar 08</td><td class="num">12,419</td><td class="num">860</td><td class="num">0</td><td class="num">14</td><td class="num muted">1.6%</td></tr>
+    <tr><td>Mar 09 &ndash; Mar 15</td><td class="num">12,778</td><td class="num">830</td><td class="num">0</td><td class="num">7</td><td class="num muted">0.8%</td></tr>
+    <tr class="row-focus"><td>Mar 16 &ndash; Mar 22</td><td class="num">15,125</td><td class="num">764</td><td class="num">0</td><td class="num">5</td><td class="num muted">0.7%</td></tr>
+    <tr class="row-focus"><td>Mar 23 &ndash; Mar 29</td><td class="num">17,620</td><td class="num">919</td><td class="num">0</td><td class="num">13</td><td class="num muted">1.4%</td></tr>
+    <tr class="row-focus row-bug"><td>Mar 30 &ndash; Apr 05</td><td class="num">17,049</td><td class="num">826</td><td class="num">0</td><td class="num red"><strong>135 &larr; Apr bug</strong></td><td class="num red">14.0%</td></tr>
+    <tr class="row-bug"><td>Apr 06 &ndash; Apr 12 <span class="muted" style="font-size:11px;">(immature)</span></td><td class="num">16,699</td><td class="num muted">691</td><td class="num">0</td><td class="num red">72</td><td class="num muted">9.4%</td></tr>
+  </table>
+
+  <h3>Headline comparison</h3>
+  <table>
+    <tr><th>Metric</th><th class="num">Dec Baseline</th><th class="num">Recent (Mar 16&ndash;Apr 5)</th><th class="num">Change</th></tr>
+    <tr><td>Total reopens / wk</td><td class="num">376</td><td class="num red">887</td><td class="num red">+511 (+136%)</td></tr>
+    <tr><td><strong>Legit reopens / wk</strong></td><td class="num">367</td><td class="num red">836</td><td class="num red">+469 (+128%)</td></tr>
+    <tr><td>Bug A (post-48h) / wk</td><td class="num">0</td><td class="num">0</td><td class="num muted">0</td></tr>
+    <tr><td>Bug B (post-closure) / wk</td><td class="num">9</td><td class="num red">51</td><td class="num red">+42 (+467%)</td></tr>
+    <tr style="background:#f0f0f0;"><td><strong>Bug share of total reopens</strong></td><td class="num">2.4%</td><td class="num">5.7%</td><td class="num muted">+3.3pp</td></tr>
+  </table>
+
+  <div class="takeaway takeaway-red">
+    <strong>Bugs are NOT driving the reopen rise.</strong><br>
+    &bull; Bug B (post-closure reopens) grew 5.7&times; in absolute terms (9 &rarr; 51/wk) and appears as a real, small ongoing tech problem &mdash; with a specific <strong>spike on Mar 30 &ndash; Apr 5 (135 bugs, 14% of reopens that week)</strong>. This is your <strong>Apr bug, confirmed in the data</strong>.<br>
+    &bull; But even during that Apr-bug week, 86% of reopens were legitimate. Across the recent 3 weeks average, bugs are <strong>only 5.7% of reopens</strong>.<br>
+    &bull; <strong>Bug A (post-48h pre-closure) is 0 across every week</strong> &mdash; this class doesn't exist in the data, at least not as captured by <code>resolution_to_reopening</code>. Either those reopens always get captured as post-closure instead (i.e. the auto-close fires before the reopen), or this specific bug signature doesn't occur.
+  </div>
+
+  <div class="takeaway takeaway-blue">
+    <strong>Caveat on Bug B source reconciliation:</strong> An independent query on <code>dynamodb.tickets</code> (raw Kapture status transitions, CLOSED/RESOLVED &rarr; OPEN with gap &gt;48h) detected a ~1,200&ndash;1,500-event Feb bug spike concentrated Feb 3&ndash;16, far larger than what <code>times_reopened_postclosure</code> shows in <code>service_ticket_model</code> (63 peak week). The two flags capture different things; <code>times_reopened_postclosure</code> is the conservative, ticket-level flag we trust for this analysis. The raw-event query is a good secondary signal but can double-count state oscillations.
+  </div>
+
+  <div class="takeaway takeaway-green">
+    <strong>Conclusion &mdash; the real problem is legit reopens, up 128%.</strong><br>
+    The 2.07% &rarr; 5.34% rate rise is driven almost entirely by <strong>legitimate customer-initiated reopens</strong> inside the 48h window. Customers are hitting "not satisfied" at ~2.3&times; the rate they did in December. This is an operational fix-quality problem, not a tech defect. The RCA should now go into <strong>Px vs Cx queue decomposition</strong> on the legit-reopen bucket.
+  </div>
+</div>
+
+<!-- 5. NEXT STEPS -->
+<div class="section" id="next">
+  <h2><span class="num-badge">5</span>Next Steps</h2>
+  <ol style="margin-left:20px;">
+    <li style="margin-bottom:6px;"><strong>Px vs Cx queue split of legit reopens</strong> (Tree 1 / Tree 2 opener, mirroring TAT RCA). Which queue drove the 128% rise?</li>
+    <li style="margin-bottom:6px;"><strong>Sub-type drill via <code>last_title</code></strong> within each tree. Cross-reference with TAT's top 3 (RDNI, Frequent Disconnection, Slow Speed) &mdash; are the same sub-types driving both TAT drop and reopen rise?</li>
+    <li style="margin-bottom:6px;"><strong>City cut</strong> (Delhi/Bharat/Mumbai) to parallel TAT finding that smaller markets degraded harder.</li>
+    <li style="margin-bottom:6px;"><strong>Partner cohort cut</strong> &mdash; test whether small partners drive the rise (same as TAT finding).</li>
+    <li style="margin-bottom:6px;"><strong>Separate Apr-bug investigation</strong> &mdash; what code change landed ~Mar 30 that caused the 135 post-closure reopens? Flag to tech/QA.</li>
+  </ol>
+</div>
+
+<p class="muted" style="font-size:11px; text-align:center; margin-top:20px;">Data source: <code>prod_db.public.service_ticket_model</code> &middot; Query: CPP-verified (<code>TAT compliance Reopen.cpp</code>) &middot; As of 2026-04-14 IST</p>
+
+</div>
+</body>
+</html>
