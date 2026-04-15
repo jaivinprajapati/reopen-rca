@@ -57,7 +57,8 @@
   <a href="#drivers">3. Numerator vs Denominator</a>
   <a href="#bugs">4. Bug Filter Test</a>
   <a href="#queue">5. Px vs Cx Split</a>
-  <a href="#next">6. Next Steps</a>
+  <a href="#ui-hypothesis">6. UI Change Hypothesis</a>
+  <a href="#next">7. Next Steps</a>
 </div>
 
 <!-- 1. PROBLEM -->
@@ -278,9 +279,46 @@
   </div>
 </div>
 
-<!-- 6. NEXT STEPS -->
+<!-- 6. UI CHANGE HYPOTHESIS -->
+<div class="section" id="ui-hypothesis">
+  <h2><span class="num-badge">6</span>UI Change Hypothesis &mdash; Did the Reopen Flow Itself Change?</h2>
+  <p>The shape of the data makes a pure "operational fix-quality regression" story incomplete. Three features point to a <strong>UI / flow change</strong> as a parallel driver:</p>
+  <ul>
+    <li>Dec baseline rate (2.07%) was the <em>endpoint</em> of a 6-month monotonic decline (8.13% &rarr; 2.07% Jul&rarr;Dec). That's too clean to be only operational improvement.</li>
+    <li>Cx rate didn't just rise &mdash; it <strong>went from 0.81% to 7.84% (~10&times;)</strong>. For a mature CS process, this magnitude without a structural flow change is implausible.</li>
+    <li>Post-Feb, rate settled at a <em>new plateau</em> (~5.3%) rather than reverting. Behavioural changes that persist suggest the environment changed, not the fix quality alone.</li>
+  </ul>
+
+  <h3>Hypothesis</h3>
+  <div class="takeaway takeaway-blue">
+    The customer-facing <strong>reopen flow was changed</strong> (likely in the customer app and/or the CS dashboard) in the Nov&rsquo;25 &ndash; Feb&rsquo;26 window. The change made reopening more prominent, easier, or the default path vs rate-and-close. What looks like a "fix-quality regression" is partly a <strong>UI-driven behaviour shift</strong>: the same fix-quality producing the same dissatisfaction now converts into reopens at a higher rate than before.
+  </div>
+
+  <h3>Tests to run</h3>
+  <table>
+    <tr><th>#</th><th>Test</th><th>What it answers</th></tr>
+    <tr><td>1</td><td><strong>Old-app-version vs new-app-version reopen rates</strong> on matched ticket types (same title, same Cx/Px queue, same month)</td><td>If same-period customers on older app have lower reopen rates than those on newer app, the UI change is the driver. Isolates behaviour from fix-quality.</td></tr>
+    <tr><td>2</td><td><strong>Customer feedback trend</strong> &mdash; rate-and-close vs reopen vs abandon (no action), Dec-anchor cohort vs recent cohort</td><td>If the <em>share</em> of dissatisfied customers choosing "reopen" (vs rate low / abandon) changed, the funnel shifted &mdash; UI nudge.</td></tr>
+    <tr><td>3</td><td><strong>App release / Kapture config timeline</strong> vs rate inflection points (Nov-end, Feb 3, Mar 30)</td><td>If inflection dates line up with release ship dates, the UI change hypothesis is confirmed.</td></tr>
+  </table>
+
+  <h3>Cx vs Px expectations under this hypothesis</h3>
+  <table>
+    <tr><th>Queue</th><th>If UI change is real driver</th><th>If fix-quality regression is real driver</th></tr>
+    <tr><td><span class="tag tag-cx">Cx</span></td><td>Most of Cx's 10&times; rise is explained by flow change in the Cx dashboard (e.g., CS agent started routing "not satisfied" tickets into reopen vs new-ticket creation). Fix-quality for Cx tickets unchanged.</td><td>CS agents' first-time-resolution quality collapsed across ~10 unrelated sub-types simultaneously. Less plausible.</td></tr>
+    <tr><td><span class="tag tag-px">Px</span></td><td>Customer-app reopen button changed placement / default behaviour. Partner fix-quality largely the same; more dissatisfied customers now land on reopen vs abandoning.</td><td>Partner field-fix quality declined ~2&times;. Consistent with the parallel TAT drop on same sub-types (RDNI, Frequent Disconnection, Slow Speed).</td></tr>
+  </table>
+
+  <div class="takeaway">
+    <strong>How to resolve which dominates:</strong> Compare reopen rates within a single ticket title (e.g., RDNI) for customers on old app vs new app in the same week. If old-app customers reopen at ~Dec baseline rate and new-app customers at ~5&times;, UI change owns most of the rise. If both are similarly elevated, fix-quality owns it.
+  </div>
+
+  <p class="muted" style="font-size:12px; margin-top:10px;">Data needed: app version per ticket (from <code>service_ticket_model.extra_data</code> or linked <code>t_router_user_mapping</code>), Kapture release notes, Wiom app release notes. Test to be run in next iteration.</p>
+</div>
+
+<!-- 7. NEXT STEPS -->
 <div class="section" id="next">
-  <h2><span class="num-badge">6</span>Next Steps</h2>
+  <h2><span class="num-badge">7</span>Next Steps</h2>
   <ol style="margin-left:20px;">
     <li style="margin-bottom:6px;"><strong>Tree 1 (Px) sub-type drill via <code>last_title</code></strong> &mdash; cross-reference with TAT Tree 1 top 3 (RDNI, Frequent Disconnection, Slow Speed). Expected to be the same sub-types since Px fix-quality failures cause both TAT breach and reopen.</li>
     <li style="margin-bottom:6px;"><strong>Tree 2 (Cx) sub-type drill</strong> &mdash; the ~10&times; collapse matches TAT's Cx collapse (95.9% &rarr; 75.1%). Check whether the same 10+ sub-types (Help in renewal, Payment not reflecting, Invoice requested, Refund issues, etc.) are reopening more.</li>
